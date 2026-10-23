@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GlucoTwin</title>
+<style>
+:root{--bg:#f2f5fa;--card:#fff;--ink:#0f1b2d;--mut:#5b6b80;--line:#e1e7f0;--acc:#0d9488;--blue:#2563eb;--ok:#16915c;--okbg:#e4f5ec;--warn:#d97706;--bad:#dc2626;--cone:#dbe6fb;--sh:0 1px 2px rgba(15,27,45,.06),0 8px 24px rgba(15,27,45,.06);color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1320;--card:#121f33;--ink:#eaf1fb;--mut:#92a5bd;--line:#223350;--acc:#2dd4bf;--blue:#7aa8ff;--ok:#4ade9a;--okbg:#10372c;--warn:#fbbf4d;--bad:#ff7b7b;--cone:#1d3763;--sh:0 8px 24px rgba(0,0,0,.35);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1320;--card:#121f33;--ink:#eaf1fb;--mut:#92a5bd;--line:#223350;--acc:#2dd4bf;--blue:#7aa8ff;--ok:#4ade9a;--okbg:#10372c;--warn:#fbbf4d;--bad:#ff7b7b;--cone:#1d3763;--sh:0 8px 24px rgba(0,0,0,.35);color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 ui-rounded,"SF Pro Rounded",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
+.wrap{max-width:1160px;margin:0 auto;padding:14px 16px 40px}
+nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.02em;display:flex;gap:8px;align-items:center}.mark{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:var(--acc);color:var(--card);font-size:16px}
+.nv{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.chip{font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:4px 12px;color:var(--mut)}
+.live{display:inline-flex;gap:6px;align-items:center;font-size:13px;font-weight:700;color:var(--ok)}.live i{width:9px;height:9px;border-radius:50%;background:var(--ok);animation:beat 1.4s infinite}.live.off{color:var(--mut)}.live.off i{background:var(--mut);animation:none}
+@keyframes beat{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ok) 55%,transparent)}100%{box-shadow:0 0 0 9px transparent}}
+button,select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 14px;cursor:pointer;transition:transform .12s,background .2s,border-color .2s}
+button:hover{border-color:var(--acc)}button:active{transform:scale(.97)}
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 60%,transparent);outline-offset:2px}
+.pri{background:var(--acc);color:#04201c;border-color:var(--acc);font-weight:700}.ghost{background:transparent}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--sh);min-width:0}
+h2{font-size:17px;margin:0 0 4px;letter-spacing:-.01em}.mut{color:var(--mut);font-size:14px}
+.hero{display:grid;grid-template-columns:380px 1fr;gap:14px;margin-bottom:14px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}
+@media(max-width:1000px){.hero{grid-template-columns:1fr}.row3{grid-template-columns:1fr}}
+.gcard{text-align:center;transition:border-color .4s,box-shadow .4s}
+.gcard.s-high{border-color:var(--bad);animation:glow 2.2s infinite}.gcard.s-watch{border-color:var(--warn)}
+@keyframes glow{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--bad) 18%,transparent),var(--sh)}}
+.gauge{position:relative;width:250px;max-width:100%;margin:0 auto}.gauge svg{width:100%;display:block;overflow:visible}
+.gc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.gc b{font-size:60px;line-height:1;letter-spacing:-.04em}.gc small{color:var(--mut);font-size:14px}.gc span{margin-top:6px;font-weight:700;font-size:14px}
+#needle{transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+#head{font-size:24px;line-height:1.2;margin:8px 0 6px;letter-spacing:-.02em}
+.tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.tag{border-radius:99px;padding:4px 12px;font-size:13px;font-weight:700;background:var(--okbg);color:var(--ok)}.tag.w{background:color-mix(in srgb,var(--warn) 16%,var(--card));color:var(--warn)}.tag.b{background:color-mix(in srgb,var(--bad) 14%,var(--card));color:var(--bad)}
+.care{font-size:13.5px;color:var(--mut);border-top:1px solid var(--line);padding-top:10px;margin-top:8px}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut);margin:4px 0 6px}.leg i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}
+svg text{fill:var(--mut);font:12px ui-rounded,system-ui,sans-serif}
+.pulse{fill:none;stroke:var(--ink);stroke-width:2;transform-box:fill-box;transform-origin:center;animation:ping .9s ease-out}
+@keyframes ping{from{transform:scale(1);opacity:.7}to{transform:scale(3.4);opacity:0}}
+.ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}.seg{display:inline-flex;border:1px solid var(--line);border-radius:12px;overflow:hidden}.seg button{border:0;border-radius:0;padding:7px 12px;background:transparent}.seg button.on{background:var(--acc);color:#04201c;font-weight:700}
+.dr{display:grid;grid-template-columns:28px 1fr 74px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px}.dr:last-child{border:0}
+.ar{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-weight:800;background:color-mix(in srgb,var(--bad) 14%,var(--card));color:var(--bad)}.ar.u{background:color-mix(in srgb,var(--blue) 14%,var(--card));color:var(--blue)}
+.dr b{text-align:right;font-size:14px}
+.wf{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.wf button[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#04201c;font-weight:700}
+.res{background:var(--bg);border-radius:14px;padding:12px;font-size:14.5px}.res .n{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.bar{display:flex;height:16px;border-radius:99px;overflow:hidden;background:var(--line);margin:10px 0}.bar div{transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.big{font-size:44px;font-weight:800;letter-spacing:-.03em;line-height:1}.st{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;text-align:center}.st b{display:block;font-size:20px}
+.tb{display:grid;grid-template-columns:150px 1fr 52px;gap:10px;align-items:center;font-size:14px;margin:7px 0}.tb .t{height:14px;border-radius:99px;background:var(--line);overflow:hidden}.tb .t div{height:100%;border-radius:99px;transition:width .8s}
+.tr2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:700px){.tr2{grid-template-columns:1fr}.tb{grid-template-columns:110px 1fr 44px}}
+table{border-collapse:collapse;width:100%;font-size:13.5px}td,th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}
+details{margin-top:10px}summary{cursor:pointer;font-weight:700}pre{overflow-x:auto;font-size:12px;background:var(--bg);padding:10px;border-radius:10px}
+footer{color:var(--mut);font-size:13px;margin-top:14px;text-align:center}
+#boot{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;text-align:center;padding:20px}#boot[hidden]{display:none}
+.spin{width:44px;height:44px;border-radius:50%;border:5px solid var(--line);border-top-color:var(--acc);animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+dialog{border:1px solid var(--line);border-radius:20px;background:var(--card);color:var(--ink);max-width:760px;width:calc(100% - 24px);padding:20px}dialog::backdrop{background:rgba(5,12,22,.55)}
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0}.form label{display:grid;gap:2px;font-size:13px;color:var(--mut)}
+input[type=number],input[type=text],input[type=file]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 8px;width:100%}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:14px}dt{color:var(--mut)}dd{margin:0}.err{color:var(--bad)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div id="boot"><div class="spin"></div><b style="font-size:20px">Setting up your glucose twin</b><span class="mut" id="loadmsg">Starting…</span><span class="mut">Everything runs privately on your device.</span></div>
+<div class="wrap">
+<nav><div class="logo"><span class="mark">◉</span>GlucoTwin</div><div class="nv"><span class="live" id="live"><i></i>Live</span><span class="chip" id="who">Loading…</span><button id="open" class="ghost">Settings and data</button></div></nav>
+<section class="hero">
+<div class="card gcard" id="gcard"><div class="gauge"><svg id="gsvg" viewBox="0 0 220 220" role="img" aria-label="Glucose gauge"></svg><div class="gc"><b id="gnum">--</b><small>mg/dL</small><span id="gtr"></span></div></div>
+<div id="head">Getting ready…</div><div class="mut" id="sub"></div><div class="tags" id="tags"></div><div class="care" id="care"></div></div>
+<div class="card"><h2>Your glucose, now and next 2 hours</h2>
+<div class="leg"><span><i style="border-color:var(--ink)"></i>Your readings</span><span><i style="border-color:var(--blue);border-top-style:dashed"></i>Forecast</span><span><i style="border-color:var(--cone)"></i>Likely range</span><span><i style="border-color:var(--ok)"></i>Target 70–180</span></div>
+<div id="chart"></div>
+<div class="ctl"><button id="play" class="pri">❚❚ Pause</button><span class="seg" id="spd"><button data-s="1000" class="on">1×</button><button data-s="350">3×</button><button data-s="150">6×</button></span><button id="back">↺ Replay last hour</button><button id="jump">Skip to next low warning</button><span class="mut" id="clock"></span></div></div>
+</section>
+<section class="row3">
+<div class="card"><h2>What’s driving this</h2><div class="mut">The biggest reasons behind the 1-hour forecast.</div><div id="why"></div></div>
+<div class="card"><h2>Try a what-if</h2><div class="mut">Tap to see how the next 2 hours could change. This is an illustration, not advice.</div>
+<div class="wf" id="wf"><button data-k="snack" aria-pressed="false">Snack (15 g carbs)</button><button data-k="meal" aria-pressed="false">Meal (30 g carbs)</button><button data-k="ins" aria-pressed="false">Half the active insulin</button><button data-k="walk" aria-pressed="false">20-minute walk</button></div><div class="res" id="sim"></div></div>
+<div class="card"><h2>Today so far</h2><div class="mut">Last 24 hours up to now</div><div class="big" id="tir">--</div><div class="mut">of time in your 70–180 target range</div><div class="bar" id="tbar"></div><div class="st" id="tst"></div></div>
+</section>
+<section class="card"><h2>How much can you trust this?</h2><div class="mut">Tested on stretches of data the system never saw while learning.</div>
+<div class="tr2"><div id="tb"></div><div id="tt" style="font-size:15px"></div></div>
+<details><summary>Detailed statistics for clinicians</summary><div id="val" style="overflow-x:auto"></div></details>
+<details><summary>Current reading as a FHIR Observation</summary><pre id="fhir"></pre></details></section>
+<footer>GlucoTwin is a research prototype, not a medical device or medical advice. Forecasts can be wrong. Always follow your care team’s guidance. All processing stays in this browser tab.</footer>
+</div>
+<dialog id="dlg"><h2>Settings and data</h2><div class="mut">Use the built-in demo patient, or load your own glucose export (CSV). Training takes a few seconds.</div>
+<div class="form">
+<label>Patient label<input id="pn" type="text" value="Demo patient"></label>
+<label>Age<input id="pa" type="number" value="52"></label>
+<label>BMI<input id="pb" type="number" step=".1" value="29.4"></label>
+<label>HbA1c (%)<input id="ph" type="number" step=".1" value="7.6"></label>
+<label>Data source<select id="src"><option value="sim">Demo (simulated)</option><option value="csv">Upload CSV</option></select></label>
+<label>CSV file<input id="file" type="file" accept=".csv,.txt,.tsv"></label>
+<label>First row clock hour (CSV)<input id="hr" type="number" min="0" max="23" value="0"></label>
+<label>Demo days<input id="sd" type="number" min="6" max="30" value="14"></label>
+<label>Demo random seed<input id="ss" type="number" value="11"></label>
+<label>Baseline glucose<input id="sb" type="number" value="135"></label>
+<label>Carb effect (mg/dL per g)<input id="sg" type="number" step=".1" value="3.4"></label>
+<label>Insulin effect (mg/dL per U)<input id="si" type="number" step="1" value="26"></label>
+<label>Carb ratio (g per U)<input id="sr" type="number" step=".5" value="10"></label>
+<label>Forecast model<select id="mod"><option value="ridge">Ridge regression</option><option value="mlp">Neural network</option></select></label></div>
+<p class="mut">CSV: one row per 5 minutes with a header. Columns named like <i>glucose</i> (mg/dL or mmol/L), and optionally <i>carbs</i>, <i>insulin</i>, <i>steps</i>. At least 4 days.</p>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button id="build" class="pri">Build twin and train models</button><button id="close">Close</button><span id="status" class="mut"></span></div>
+<p class="mut" id="dsum"></p><dl id="prof"></dl></dialog>
+<script>
+
+function rng(s){s>>>=0;return()=>{s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+const gs=r=>Math.sqrt(-2*Math.log(r()+1e-9))*Math.cos(6.2831853*r());
+const H=[3,6,9,12,18,24],HI=3,NF=10,HID=16,$=s=>document.querySelector(s),V=id=>+$(id).value;
+const kc=[],ki=[];for(let k=0;k<72;k++){kc.push(k/12*Math.exp(1-k/12));ki.push(k/18*Math.exp(1-k/18))}
+let D,N,TR,CA,MU,SD,YM,YS,RW,MP,SIG={},SEL="mlp",cur=0,timer=null,busy=false;
+function sim(q){const n=288*q.days,r=rng(q.seed),c=new Float32Array(n),u=new Float32Array(n),s=new Float32Array(n),g=new Float32Array(n),e=new Float32Array(n);
+for(let d=0;d<q.days;d++){const b=d*288;
+[[90,45+r()*25],[156,50+r()*30],[234,50+r()*30]].forEach(([t0,cb])=>{const t=b+t0+Math.round(gs(r)*4);cb=Math.round(cb);c[t]+=cb;let dose=cb/q.icr*(1+gs(r)*.18);if(r()<.18)dose*=1.35;u[t]+=Math.round(dose*2)/2});
+if(r()<.4)c[b+190+Math.round(r()*20)]+=20;
+if(r()<.75){const t=b+(r()<.5?170:205)+Math.round(r()*15),L=6+Math.round(r()*4);for(let k=0;k<L;k++)s[t+k]=350+r()*250}}
+for(let t=0;t<n;t++)for(let k=0;k<72&&t+k<n;k++){if(c[t])e[t+k]+=c[t]*q.cg*kc[k];if(u[t])e[t+k]-=u[t]*q.ig*ki[k]}
+let z=0;for(let t=0;t<n;t++){z=.93*z+gs(r)*2.2;let a=0;for(let k=0;k<18&&t-k>=0;k++)a+=s[t-k];
+g[t]=Math.min(350,Math.max(40,q.base+8*Math.sin((t%288)/288*6.2832-1.2)+e[t]-a*.008+z*2))}
+return{g,c,u,s,off:0,src:"Simulator, seed "+q.seed}}
+function parseCSV(txt,hr){const L=txt.trim().split(/\r?\n/),h=L.shift().split(/[,;\t]/).map(x=>x.trim().toLowerCase()),col=re=>h.findIndex(x=>re.test(x));
+const gi=col(/gluc|sgv|cgm|^bg|value/),ci=col(/carb|cho/),ii=col(/insul|bolus|dose/),si=col(/step|activ/);
+if(gi<0)throw Error("No glucose column found. Use a header containing glucose, sgv or cgm.");
+const n=L.length;if(n<288*4)throw Error("Need at least 4 days (1152 rows); found "+n+".");
+const g=new Float32Array(n),c=new Float32Array(n),u=new Float32Array(n),s=new Float32Array(n);let last=NaN;
+L.forEach((l,k)=>{const r=l.split(/[,;\t]/);let v=parseFloat(r[gi]);if(isNaN(v))v=last;g[k]=v;if(!isNaN(v))last=v;c[k]=ci>=0?(parseFloat(r[ci])||0):0;u[k]=ii>=0?(parseFloat(r[ii])||0):0;s[k]=si>=0?(parseFloat(r[si])||0):0});
+const fv=g.find(v=>!isNaN(v));if(fv===undefined)throw Error("No numeric glucose values.");for(let k=0;k<n&&isNaN(g[k]);k++)g[k]=fv;
+const med=[...g].sort((a,b)=>a-b)[n>>1];if(med<35)for(let k=0;k<n;k++)g[k]*=18.016;
+for(let k=0;k<n;k++)g[k]=Math.min(450,Math.max(30,g[k]));
+return{g,c,u,s,off:Math.round(hr*12),src:"CSV, "+n+" rows"+(med<35?" (mmol/L converted)":"")+(ci<0?"; no carbs column":"")+(ii<0?"; no insulin column":"")+(si<0?"; no steps column":"")}}
+const FN=["Current glucose","15-min trend","30-min trend","60-min trend","1-hour average","Carbs on board","Insulin on board","Recent walking","Time of day (a)","Time of day (b)"];
+function feat(t){const{g,c,u,s,off}=D;let cob=0,iob=0,st=0,m=0;for(let k=0;k<48;k++){cob+=c[t-k]*Math.exp(-k/18);iob+=u[t-k]*Math.exp(-k/30)}
+for(let k=0;k<6;k++)st+=s[t-k];for(let k=0;k<12;k++)m+=g[t-k];const a=6.2832*((t+off)%288)/288;
+return[g[t],g[t]-g[t-3],g[t]-g[t-6],g[t]-g[t-12],m/12,cob,iob,st/100,Math.sin(a),Math.cos(a)]}
+const zf=f=>f.map((v,j)=>(v-MU[j])/SD[j]);
+function solve(A,b){const n=b.length;A=A.map((r,i)=>[...r,b[i]]);for(let i=0;i<n;i++){let m=i;for(let j=i+1;j<n;j++)if(Math.abs(A[j][i])>Math.abs(A[m][i]))m=j;[A[i],A[m]]=[A[m],A[i]];for(let j=0;j<n;j++){if(j==i)continue;const f=A[j][i]/A[i][i];for(let k=i;k<=n;k++)A[j][k]-=f*A[i][k]}}return A.map((r,i)=>r[n]/r[i])}
+const ridgeD=z=>H.map((_,i)=>{let v=YM[i];for(let j=0;j<NF;j++)v+=RW[i][j]*z[j];return v});
+function mlpF(P,z,hh){const[W1,b1,W2,b2]=P,o=new Array(6);for(let k=0;k<HID;k++){let a=b1[k];for(let j=0;j<NF;j++)a+=W1[k*NF+j]*z[j];hh[k]=Math.tanh(a)}
+for(let i=0;i<6;i++){let a=b2[i];for(let k=0;k<HID;k++)a+=W2[i*HID+k]*hh[k];o[i]=a}return o}
+const mlpD=z=>mlpF(MP,z,new Array(HID)).map((v,i)=>v*YS[i]+YM[i]);
+const dl=(f,m)=>{const z=zf(f);return m=="ridge"?ridgeD(z):mlpD(z)};
+function pred(f,m,mod){f=f.slice();if(mod){f[5]+=mod.c;f[6]=Math.max(0,f[6]+mod.u);f[7]+=mod.s/100}return dl(f,m).map(d=>Math.min(400,Math.max(30,f[0]+d)))}
+function contrib(f,m){const base=dl(f,m)[HI];return f.map((_,j)=>{const g=f.slice();g[j]=MU[j];return base-dl(g,m)[HI]})}
+function clarke(r,p){if((p<=70&&r<=70)||(p<=1.2*r&&p>=.8*r))return"A";if((r>=180&&p<=70)||(r<=70&&p>=180))return"E";
+if((r>=240&&p>=70&&p<=180)||(r<=175/3&&p>=70&&p<=180)||(r>=175/3&&r<=70&&p>=1.2*r))return"D";
+if((r>=70&&r<=290&&p>=r+110)||(r>=130&&r<=180&&p<=1.4*r-182))return"C";return"B"}
+const tick=()=>new Promise(r=>setTimeout(r,0));
+async function build(){if(busy)return;busy=true;stop();const st=m=>{$("#status").textContent=m;$("#loadmsg").textContent=m};$("#status").className="mut";$("#build").disabled=true;
+try{st("Preparing data…");await tick();
+if($("#src").value=="csv"){const f=$("#file").files[0];if(!f)throw Error("Choose a CSV file or switch the source to Simulator.");D=parseCSV(await f.text(),V("#hr"))}
+else D=sim({days:Math.min(30,Math.max(6,V("#sd"))),seed:V("#ss"),base:V("#sb"),cg:V("#sg"),ig:V("#si"),icr:V("#sr")});
+D.prof={n:$("#pn").value,age:V("#pa"),bmi:V("#pb"),a1c:V("#ph")};N=D.g.length;TR=Math.floor(N*.65);CA=Math.floor(N*.8);
+const R=(a,b)=>{const o=[];for(let t=a;t<b;t++)o.push(t);return o},itr=R(48,TR-24),ical=R(TR,CA-24),ite=R(CA,N-24),Y=t=>H.map(h=>D.g[t+h]-D.g[t]);
+const Xtr=itr.map(feat),n=Xtr.length;MU=[];SD=[];
+for(let j=0;j<NF;j++){let m=0;Xtr.forEach(x=>m+=x[j]);m/=n;let v=0;Xtr.forEach(x=>v+=(x[j]-m)**2);MU[j]=m;SD[j]=Math.sqrt(v/n)||1}
+const Ztr=Xtr.map(zf),Ytr=itr.map(Y),Zc=ical.map(t=>zf(feat(t))),Yc=ical.map(Y);
+YM=H.map((_,i)=>Ytr.reduce((a,y)=>a+y[i],0)/n);YS=H.map((_,i)=>Math.sqrt(Ytr.reduce((a,y)=>a+(y[i]-YM[i])**2,0)/n)||1);
+st("Fitting ridge regression…");await tick();
+const A0=Array.from({length:NF},()=>new Array(NF).fill(0));Ztr.forEach(z=>{for(let i=0;i<NF;i++)for(let j=0;j<NF;j++)A0[i][j]+=z[i]*z[j]});
+const B=H.map((_,i)=>{const b=new Array(NF).fill(0);Ztr.forEach((z,r)=>{for(let j=0;j<NF;j++)b[j]+=z[j]*(Ytr[r][i]-YM[i])});return b});
+let best=1e18,lamB=0;for(const lam of[.001,.01,.1,1,10]){const A=A0.map((r,i)=>r.map((v,j)=>v+(i==j?n*lam:0))),W=H.map((_,i)=>solve(A,B[i]));
+let e=0;Zc.forEach((z,r)=>H.forEach((_,i)=>{let v=YM[i];for(let j=0;j<NF;j++)v+=W[i][j]*z[j];e+=((Yc[r][i]-v)/YS[i])**2}));if(e<best){best=e;RW=W;lamB=lam}}
+const r=rng(7);MP=[0,1,2,3].map(i=>new Float64Array([HID*NF,HID,6*HID,6][i]));
+for(let i=0;i<MP[0].length;i++)MP[0][i]=(r()*2-1)*Math.sqrt(6/(NF+HID));for(let i=0;i<MP[2].length;i++)MP[2][i]=(r()*2-1)*Math.sqrt(6/(HID+6));
+const G=MP.map(a=>new Float64Array(a.length)),Mo=MP.map(a=>new Float64Array(a.length)),Ve=MP.map(a=>new Float64Array(a.length)),Ys=Ytr.map(y=>y.map((v,i)=>(v-YM[i])/YS[i])),Yq=Yc.map(y=>y.map((v,i)=>(v-YM[i])/YS[i])),ids=R(0,n),hh=new Array(HID),dh=new Array(HID);
+let bestL=1e18,bestP=null,stp=0,pat=0,ep=0;const BS=64;
+for(ep=1;ep<=100&&pat<15;ep++){for(let i=n-1;i>0;i--){const j=Math.floor(r()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
+for(let b0=0;b0<n;b0+=BS){const bt=ids.slice(b0,b0+BS),Bn=bt.length;G.forEach(a=>a.fill(0));
+bt.forEach(ix=>{const z=Ztr[ix],y=Ys[ix],o=mlpF(MP,z,hh);dh.fill(0);for(let i=0;i<6;i++){const d=(o[i]-y[i])/Bn;G[3][i]+=d;for(let k=0;k<HID;k++){G[2][i*HID+k]+=d*hh[k];dh[k]+=MP[2][i*HID+k]*d}}
+for(let k=0;k<HID;k++){const dp=dh[k]*(1-hh[k]*hh[k]);G[1][k]+=dp;for(let j=0;j<NF;j++)G[0][k*NF+j]+=dp*z[j]}});
+stp++;MP.forEach((p,q)=>{for(let i=0;i<p.length;i++){const g=G[q][i]+1e-3*p[i];Mo[q][i]=.9*Mo[q][i]+.1*g;Ve[q][i]=.999*Ve[q][i]+.001*g*g;p[i]-=.005*(Mo[q][i]/(1-.9**stp))/(Math.sqrt(Ve[q][i]/(1-.999**stp))+1e-8)}})}
+let L=0;Zc.forEach((z,i)=>{const o=mlpF(MP,z,hh);for(let k=0;k<6;k++)L+=(o[k]-Yq[i][k])**2});L/=Zc.length*6;
+if(L<bestL){bestL=L;bestP=MP.map(a=>a.slice());pat=0}else pat++;
+if(ep%4==0){st("Training neural network: epoch "+ep+", validation loss "+L.toFixed(3));await tick()}}
+MP=bestP;
+st("Evaluating on held-out data…");await tick();
+const res={ridge:H.map(()=>[]),mlp:H.map(()=>[])};ical.forEach(t=>{const f=feat(t),z=zf(f),d={ridge:ridgeD(z),mlp:mlpD(z)};H.forEach((h,i)=>{for(const k in d)res[k][i].push(D.g[t+h]-f[0]-d[k][i])})});
+for(const k in res)SIG[k]=res[k].map(a=>Math.sqrt(a.reduce((x,y)=>x+y*y,0)/a.length));
+const nm=["ridge","mlp","naive"],AC={};nm.forEach(k=>AC[k]={ae:[0,0,0],se:0,cz:{A:0,B:0,C:0,D:0,E:0},tp:0,fp:0,fn:0,cov:0});let ev=0;
+ite.forEach(t=>{const f=feat(t),z=zf(f),d={ridge:ridgeD(z),mlp:mlpD(z)},a12=D.g[t+12];if(a12<70)ev++;
+nm.forEach(k=>{const a=AC[k];[1,3,5].forEach((i,x)=>a.ae[x]+=Math.abs(D.g[t+H[i]]-(k=="naive"?f[0]:f[0]+d[k][i])));const pr=k=="naive"?f[0]:f[0]+d[k][3];a.se+=(a12-pr)**2;a.cz[clarke(a12,pr)]++;
+if(a12<70&&pr<70)a.tp++;else if(a12>=70&&pr<70)a.fp++;else if(a12<70&&pr>=70)a.fn++;if(k!="naive"&&Math.abs(a12-pr)<=1.64*SIG[k][3])a.cov++})});
+STAT={ACC:AC,nT:ite.length,ev};const nT=ite.length,pc=x=>(100*x).toFixed(0)+"%",rt=(a,b)=>b?pc(a/b):"n/a",T=(l,fn)=>`<tr><td>${l}</td>${nm.map(k=>`<td>${fn(AC[k],k)}</td>`).join("")}</tr>`;
+$("#val").innerHTML=`<table><tr><th>Test set</th><th>Ridge</th><th>Neural net</th><th>Flat</th></tr>${T("MAE 30 min",a=>(a.ae[0]/nT).toFixed(1))}${T("MAE 60 min",a=>(a.ae[1]/nT).toFixed(1))}${T("MAE 120 min",a=>(a.ae[2]/nT).toFixed(1))}${T("RMSE 60 min",a=>Math.sqrt(a.se/nT).toFixed(1))}${T("Clarke zone A",a=>pc(a.cz.A/nT))}${T("Clarke A+B",a=>pc((a.cz.A+a.cz.B)/nT))}${T("Clarke D+E",a=>pc((a.cz.D+a.cz.E)/nT))}${T("Low sensitivity",a=>rt(a.tp,a.tp+a.fn))}${T("Low precision",a=>rt(a.tp,a.tp+a.fp))}${T("90% interval hit rate",(a,k)=>k=="naive"?"–":pc(a.cov/nT))}</table><p class="mut">mg/dL at 60 min unless stated; ${nT} test points from the final 20% of the record, never used for fitting or calibration (${ev} low readings at 60 min). “Flat” assumes glucose stays unchanged. Split: first 65% train, next 15% tune and calibrate, last 20% test. Ridge strength ${lamB}; network stopped at epoch ${ep-1}. Clarke grid is the standard published zone map. Accuracy reflects this dataset only.</p>`;
+SEL=SIG.mlp[HI]<SIG.ridge[HI]?"mlp":"ridge";$("#mod").value=SEL;
+const q=D.g,lo=q.filter(v=>v<70).length/N,hi=q.filter(v=>v>180).length/N,mean=q.reduce((a,b)=>a+b,0)/N;
+$("#dsum").textContent=`Data: ${D.src}; ${N} readings (${(N/288).toFixed(1)} days); mean ${mean.toFixed(0)} mg/dL; ${(lo*100).toFixed(1)}% below 70; ${(hi*100).toFixed(1)}% above 180. Best model by validation error: ${SEL=="mlp"?"neural network":"ridge regression"}.`;
+const p=D.prof;$("#prof").innerHTML=`<dt>Patient</dt><dd>${p.n.replace(/[<>&]/g,"")}</dd><dt>Age, BMI</dt><dd>${p.age}, ${p.bmi}</dd><dt>HbA1c</dt><dd>${p.a1c}%</dd><dt>Data</dt><dd>${D.src}</dd>`;
+const k=firstLow(CA);cur=k>=0?Math.max(CA,k-12):CA;st("Ready.");start=cur;$("#boot").hidden=true;render();go()}
+catch(e){$("#boot").hidden=true;$("#dlg").showModal();$("#status").className="err";$("#status").textContent=e.message}
+busy=false;$("#build").disabled=false}
+const tl=t=>{const m=((t+D.off)%288)*5;return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0")};
+let STAT,start=0,speed=1000,shown=0,Wf={snack:0,meal:0,ins:0,walk:0};
+const modOf=f=>{const c=(Wf.snack?15:0)+(Wf.meal?30:0),u=Wf.ins?-f[6]/2:0,s=Wf.walk?2000:0;return(c||u||s)?{c,u,s}:null};
+function setPlay(){$("#play").textContent=timer?"❚❚ Pause":"▶ Play";$("#live").classList.toggle("off",!timer)}
+function stop(){clearInterval(timer);timer=null;setPlay()}
+function go(){clearInterval(timer);timer=setInterval(()=>{cur++;if(cur>=N-25)cur=start;render()},speed);setPlay()}
+function risk(q){const m=Math.min(...q);return m<70?"high":(m-1.64*SIG[SEL][HI]<70&&m<95)?"watch":"low"}
+function firstLow(from){for(let t=from;t<N-24;t++){const f=feat(t);if(f[0]>=85&&pred(f,SEL)[HI]<70)return t}return -1}
+const pol=(r,a)=>[110+r*Math.sin(a*Math.PI/180),110-r*Math.cos(a*Math.PI/180)],ang=v=>-135+(Math.min(300,Math.max(40,v))-40)/260*270;
+function arc(v0,v1,c){const[a,b]=[pol(92,ang(v0)),pol(92,ang(v1))];return`<path d="M${a} A92 92 0 ${ang(v1)-ang(v0)>180?1:0} 1 ${b}" fill="none" stroke="${c}" stroke-width="16" stroke-linecap="round" opacity=".9"/>`}
+$("#gsvg").innerHTML=arc(40,68,"var(--bad)")+arc(72,178,"var(--ok)")+arc(182,300,"var(--warn)")+`<g id="needle" style="transform-origin:110px 110px;transform:rotate(-135deg)"><circle cx="110" cy="18" r="10" fill="var(--card)" stroke="var(--ink)" stroke-width="4"/></g>`;
+function tween(el,to){const from=+el.dataset.v||to;el.dataset.v=to;const t0=performance.now();(function f(n){const k=Math.min(1,(n-t0)/700),e=1-(1-k)**3;el.textContent=Math.round(from+(to-from)*e);if(k<1)requestAnimationFrame(f)})(t0)}
+function chart(t,q,qs){const sg=SIG[SEL],W_=720,Ht=320,L=34,R=8,T=14,B=26,hs=36,fu=24,x=i=>L+(i+hs)/(hs+fu)*(W_-L-R),y=v=>T+(1-(Math.min(280,Math.max(40,v))-40)/240)*(Ht-T-B),g=D.g;
+let s=`<svg viewBox="0 0 ${W_} ${Ht}" role="img" aria-label="Glucose history and forecast"><defs><linearGradient id="ar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--acc)" stop-opacity=".3"/><stop offset="1" stop-color="var(--acc)" stop-opacity="0"/></linearGradient></defs>`;
+s+=`<rect x="${L}" y="${y(180)}" width="${W_-L-R}" height="${y(70)-y(180)}" rx="8" fill="var(--okbg)"/><text x="${L+8}" y="${y(180)+16}" style="fill:var(--ok)">Target range</text>`;
+[70,180].forEach(v=>s+=`<text x="2" y="${y(v)+4}">${v}</text>`);
+[-36,-24,-12,0,12,24].forEach(i=>s+=`<text x="${x(i)}" y="${Ht-6}" text-anchor="middle">${i==0?"Now":tl(t+i)}</text>`);
+const pts=[[0,g[t]],...H.map((h,i)=>[h,q[i]])],up=pts.map(([i,v],k)=>[i,v+(k?1.64*sg[k-1]:0)]),lo=pts.map(([i,v],k)=>[i,v-(k?1.64*sg[k-1]:0)]).reverse();
+s+=`<polygon fill="var(--cone)" opacity=".9" points="${[...up,...lo].map(([i,v])=>x(i)+","+y(v)).join(" ")}"/>`;
+let d="";for(let i=-hs;i<=0;i++)d+=(i==-hs?"M":"L")+x(i)+","+y(g[t+i]);
+s+=`<line x1="${L}" x2="${W_-R}" y1="${y(70)}" y2="${y(70)}" stroke="var(--bad)" stroke-dasharray="5 5"/><text x="${W_-R-4}" y="${y(70)+15}" text-anchor="end" style="fill:var(--bad)">Low: 70</text>`;
+s+=`<path d="${d} L${x(0)},${y(40)} L${x(-hs)},${y(40)}Z" fill="url(#ar)"/>`;
+s+=`<path d="M${pts.map(([i,v])=>x(i)+","+y(v)).join("L")}" fill="none" stroke="var(--blue)" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round"/>`;
+if(qs)s+=`<path d="M${[[0,g[t]],...H.map((h,i)=>[h,qs[i]])].map(([i,v])=>x(i)+","+y(v)).join("L")}" fill="none" stroke="var(--warn)" stroke-width="3.5" stroke-linecap="round"/><text x="${x(24)-4}" y="${y(qs[5])-9}" text-anchor="end" style="fill:var(--warn);font-weight:700">If you try this</text>`;
+return s+`<path d="${d}" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle class="pulse" cx="${x(0)}" cy="${y(g[t])}" r="6"/><circle cx="${x(0)}" cy="${y(g[t])}" r="6" fill="var(--ink)" stroke="var(--card)" stroke-width="2.5"/></svg>`}
+function why(j,c){const d=c<0;return j==6?(d?"Insulin still working in your body is pulling your sugar down":"Little active insulin, so nothing is pulling your sugar down"):j==5?(d?"Not much recent food to hold your sugar up":"Food you ate recently is still raising your sugar"):j==7?(d?"Recent activity is lowering your sugar":"Being less active than usual nudges sugar up"):j<5?(d?"Your sugar has been drifting down":"Your sugar has been climbing"):(d?"Your usual pattern at this time of day lowers sugar":"Your usual pattern at this time of day raises sugar")}
+function render(){if(!D||!MP)return;const t=cur,f=feat(t),q=pred(f,SEL),m=modOf(f),qs=m?pred(f,SEL,m):null,rk=risk(q),g=D.g[t],sg=SIG[SEL][HI];
+$("#who").textContent=D.prof.n.replace(/[<>&]/g,"")+" · "+(D.src.startsWith("Sim")?"demo data":"your data");$("#clock").textContent="Time "+tl(t);
+const nd=$("#needle");nd.style.transform="rotate("+ang(g)+"deg)";tween($("#gnum"),Math.round(g));
+const d30=f[2],tr=d30>=40?["↑","Rising fast"]:d30>=15?["↗","Rising"]:d30>-15?["→","Steady"]:d30>-40?["↘","Falling"]:["↓","Falling fast"];$("#gtr").textContent=tr[0]+" "+tr[1];
+const mi=q.indexOf(Math.min(...q)),mn=Math.round(q[mi]),lowAt=q.findIndex(v=>v<70),now_low=g<70;
+const hd=now_low?["Your glucose is low right now","b"]:rk=="high"?["Heads up: a low may be coming","b"]:rk=="watch"?["Keep an eye on this","w"]:g>180?["A bit above your target right now","w"]:["You’re in a good range","ok"];
+$("#gcard").className="card gcard s-"+(now_low||rk=="high"?"high":rk=="watch"||g>180?"watch":"ok");$("#head").textContent=hd[0];
+$("#sub").textContent=rk=="low"?"No low is expected in the next 2 hours. The forecast’s lowest point is about "+mn+" mg/dL.":"The forecast dips to about "+mn+" mg/dL in around "+H[mi]*5+" minutes.";
+$("#tags").innerHTML=(lowAt>=0?`<span class="tag b">Below 70 in ~${H[lowAt]*5} min</span>`:`<span class="tag">No low expected</span>`)+`<span class="tag ${rk=="low"?"":"w"}">In 1 hour: ~${Math.round(q[HI])} (${Math.round(q[HI]-1.64*sg)}–${Math.round(q[HI]+1.64*sg)})</span>`;
+$("#care").textContent=(now_low||rk!="low")?"If you feel shaky, sweaty or dizzy, check your glucose and follow your care plan. Your care team decides treatment.":"Forecasts update with every new reading. Keep following your care plan.";
+$("#chart").innerHTML=chart(t,q,qs);
+const cs=contrib(f,SEL).map((c,j)=>[c,j]).filter(a=>a[1]>0&&Math.abs(a[0])>=2).sort((a,b)=>Math.abs(b[0])-Math.abs(a[0])).slice(0,4);
+$("#why").innerHTML=cs.length?cs.map(([c,j])=>`<div class="dr"><span class="ar ${c<0?"":"u"}">${c<0?"↓":"↑"}</span><span>${why(j,c)}</span><b>${c>0?"+":"−"}${Math.abs(Math.round(c))} mg/dL</b></div>`).join(""):`<div class="mut" style="padding:10px 0">Nothing stands out right now.</div>`;
+document.querySelectorAll("#wf button").forEach(b=>b.setAttribute("aria-pressed",Wf[b.dataset.k]?"true":"false"));
+if(qs){const m2=Math.round(Math.min(...qs)),a=Math.round(q[HI]),b=Math.round(qs[HI]);$("#sim").innerHTML=`<div class="mut">Forecast in 1 hour</div><div class="n">${a} → ${b} mg/dL</div><div>${m2>=70?(mn<70?"In this scenario the forecast stays above 70.":"The forecast stays above 70 either way."):"Even so, the forecast still dips to about "+m2+" mg/dL."}</div><div class="mut" style="margin-top:6px">Hypothetical only. Talk to your care team before changing food, insulin or activity.</div>`}
+else $("#sim").innerHTML=`<div class="mut">Pick one or more options above to compare against the current forecast.</div>`;
+const a0=Math.max(0,t-287);let lo=0,ok=0,hi=0,mnr=999;for(let i=a0;i<=t;i++){const v=D.g[i];v<70?lo++:v>180?hi++:ok++;mnr=Math.min(mnr,v)}const n=t-a0+1,p=x=>Math.round(100*x/n);
+$("#tir").textContent=p(ok)+"%";$("#tbar").innerHTML=`<div style="width:${100*lo/n}%;background:var(--bad)"></div><div style="width:${100*ok/n}%;background:var(--ok)"></div><div style="width:${100*hi/n}%;background:var(--warn)"></div>`;
+$("#tst").innerHTML=`<div><b style="color:var(--bad)">${lo*5} min</b><span class="mut">below 70</span></div><div><b style="color:var(--warn)">${hi*5} min</b><span class="mut">above 180</span></div><div><b>${Math.round(mnr)}</b><span class="mut">lowest</span></div>`;
+if(STAT){const a=STAT.ACC[SEL],nn=STAT.nT,mm=a.ae[1]/nn,mf=STAT.ACC.naive.ae[1]/nn,mx=Math.max(mm,mf),sens=a.tp+a.fn?a.tp/(a.tp+a.fn):null,prec=a.tp+a.fp?a.tp/(a.tp+a.fp):null;
+$("#tb").innerHTML=`<div class="tb"><span>This forecast</span><div class="t"><div style="width:${100*mm/mx}%;background:var(--acc)"></div></div><b>${Math.round(mm)}</b></div><div class="tb"><span>Guess “no change”</span><div class="t"><div style="width:${100*mf/mx}%;background:var(--mut)"></div></div><b>${Math.round(mf)}</b></div><div class="mut">Average miss at 1 hour, in mg/dL. Shorter is better.</div>`;
+$("#tt").innerHTML=`<p style="margin:0 0 8px">On new data, the 1-hour forecast was typically off by about <b>${Math.round(mm)} mg/dL</b>, against <b>${Math.round(mf)}</b> for guessing no change.</p><p style="margin:0">${sens===null?"There were no lows in the test data, so low warnings could not be checked.":"It caught about <b>"+Math.round(10*sens)+" of 10</b> real lows, and about <b>"+(prec===null?"–":Math.round(10*prec))+" of 10</b> of its low warnings were correct."}</p>`}
+$("#fhir").textContent=JSON.stringify({resourceType:"Observation",status:"final",category:[{coding:[{system:"http://terminology.hl7.org/CodeSystem/observation-category",code:"vital-signs"}]}],code:{coding:[{system:"http://loinc.org",code:"2339-0",display:"Glucose [Mass/volume] in Blood"}]},subject:{display:D.prof.n},effectiveDateTime:"day "+(Math.floor((t+D.off)/288)+1)+" "+tl(t),valueQuantity:{value:Math.round(g),unit:"mg/dL",system:"http://unitsofmeasure.org",code:"mg/dL"}},null,1)}
+$("#build").onclick=build;$("#open").onclick=()=>$("#dlg").showModal();$("#close").onclick=()=>$("#dlg").close();
+$("#mod").onchange=e=>{SEL=e.target.value;render()};$("#file").onchange=()=>{$("#src").value="csv"};
+$("#play").onclick=()=>{if(!D)return;timer?stop():go()};
+$("#spd").onclick=e=>{const b=e.target.closest("button");if(!b)return;speed=+b.dataset.s;document.querySelectorAll("#spd button").forEach(x=>x.classList.toggle("on",x==b));if(timer)go()};
+$("#jump").onclick=()=>{if(!D)return;const k=firstLow(cur+12);if(k>=0){cur=k;render()}};
+$("#back").onclick=()=>{if(!D)return;cur=Math.max(CA,cur-12);render()};
+$("#wf").onclick=e=>{const b=e.target.closest("button");if(!b)return;Wf[b.dataset.k]=Wf[b.dataset.k]?0:1;render()};
+build();
+</script></body></html>

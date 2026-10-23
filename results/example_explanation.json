@@ -1,0 +1,63 @@
+{
+ "patient": "SYN-049",
+ "t": 841,
+ "current": 99.53138840042976,
+ "fused_60": 68.52508461319832,
+ "dynamic_only_60": 70.89433586441902,
+ "actual_60": 62.76880412769383,
+ "explanation": [
+  {
+   "feature": "min_since_insulin",
+   "label": "Minutes since last insulin",
+   "value": 150.0,
+   "shap_mgdl": -21.6,
+   "stream": "wearable",
+   "text": "Minutes since last insulin (150) lowers the 60-minute forecast by about 22 mg/dL."
+  },
+  {
+   "feature": "carbs_on_board",
+   "label": "Carbs on board",
+   "value": 15.2,
+   "shap_mgdl": -11.5,
+   "stream": "wearable",
+   "text": "Carbs on board (15) lowers the 60-minute forecast by about 11 mg/dL."
+  },
+  {
+   "feature": "mean_1h",
+   "label": "1-hour average glucose",
+   "value": 124.7,
+   "shap_mgdl": 5.2,
+   "stream": "wearable",
+   "text": "1-hour average glucose (125) raises the 60-minute forecast by about 5 mg/dL."
+  },
+  {
+   "feature": "min_since_meal",
+   "label": "Minutes since last meal",
+   "value": 150.0,
+   "shap_mgdl": -5.1,
+   "stream": "wearable",
+   "text": "Minutes since last meal (150) lowers the 60-minute forecast by about 5 mg/dL."
+  },
+  {
+   "feature": "hr_30m",
+   "label": "Heart rate, last 30 min",
+   "value": 60.7,
+   "shap_mgdl": 3.9,
+   "stream": "wearable",
+   "text": "Heart rate, last 30 min (61) raises the 60-minute forecast by about 4 mg/dL."
+  }
+ ],
+ "what_if": {
+  "baseline": {
+   "30": 77.86346351944832,
+   "60": 68.52508461319832,
+   "120": 66.04381668412117
+  },
+  "scenario": {
+   "30": 144.12870514237312,
+   "60": 154.39861786209968,
+   "120": 118.01841842972664
+  },
+  "label": "HYPOTHETICAL scenario. Not treatment advice."
+ }
+}

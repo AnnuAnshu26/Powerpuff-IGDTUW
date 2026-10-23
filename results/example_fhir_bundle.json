@@ -1,0 +1,172 @@
+{
+ "resourceType": "Bundle",
+ "type": "collection",
+ "entry": [
+  {
+   "resource": {
+    "resourceType": "Patient",
+    "id": "SYN-000",
+    "gender": "male",
+    "extension": [
+     {
+      "url": "synthetic",
+      "valueBoolean": true
+     }
+    ]
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Condition",
+    "subject": {
+     "reference": "Patient/SYN-000"
+    },
+    "code": {
+     "coding": [
+      {
+       "system": "http://hl7.org/fhir/sid/icd-10",
+       "code": "E11",
+       "display": "Type 2 diabetes mellitus"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "4548-4",
+       "display": "HbA1c"
+      }
+     ]
+    },
+    "subject": {
+     "reference": "Patient/SYN-000"
+    },
+    "valueQuantity": {
+     "value": 5.8,
+     "unit": "%"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "62238-1",
+       "display": "eGFR"
+      }
+     ]
+    },
+    "subject": {
+     "reference": "Patient/SYN-000"
+    },
+    "valueQuantity": {
+     "value": 71.0,
+     "unit": "mL/min/1.73m2"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "1558-6",
+       "display": "Fasting glucose"
+      }
+     ]
+    },
+    "subject": {
+     "reference": "Patient/SYN-000"
+    },
+    "valueQuantity": {
+     "value": 92.0,
+     "unit": "mg/dL"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "13457-7",
+       "display": "LDL cholesterol"
+      }
+     ]
+    },
+    "subject": {
+     "reference": "Patient/SYN-000"
+    },
+    "valueQuantity": {
+     "value": 127.0,
+     "unit": "mg/dL"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+     "coding": [
+      {
+       "system": "http://loinc.org",
+       "code": "39-1",
+       "display": "BMI (placeholder code)"
+      }
+     ]
+    },
+    "subject": {
+     "reference": "Patient/SYN-000"
+    },
+    "valueQuantity": {
+     "value": 31.4,
+     "unit": "kg/m2"
+    }
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+     "text": "TCF7L2 rs7903146 risk alleles (simulated)"
+    },
+    "subject": {
+     "reference": "Patient/SYN-000"
+    },
+    "valueInteger": 1
+   }
+  },
+  {
+   "resource": {
+    "resourceType": "Observation",
+    "status": "final",
+    "code": {
+     "text": "KCNJ11 rs5219 risk alleles (simulated)"
+    },
+    "subject": {
+     "reference": "Patient/SYN-000"
+    },
+    "valueInteger": 0
+   }
+  }
+ ]
+}
