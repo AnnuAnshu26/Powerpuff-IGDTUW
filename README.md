@@ -1,13 +1,15 @@
 # GlucoTwin AI: Predictive Healthcare Digital Twin for Early Low-Glucose Warning
 
+> Repository: https://github.com/AnnuAnshu26/Powerpuff-IGDTUW
+>
 > Research prototype built for the Happiest Health "Reimagining and Reforming Healthcare in India" Summit 2026, Phase 1 (Prototype and Code Submission). It uses **synthetic data only** and is **not a medical device**.
 
 ## 1. Team and institute
 | | |
 |---|---|
-| Team name | TriCode |
-| Members | Anushka Aggarwal (team lead, ML and data), Anshu Yadav (backend and explainability), Aarti (frontend, UX and research) |
-| College / incubator | Delhi Technological University *(confirm and edit if different)* |
+| Team name | Powerpuff Girls |
+| Members | Anshu Yadav (team lead, ML and data), Anushka Aggarwal (backend and explainability), Aarti (frontend, UX and research) |
+| College / incubator | Indira Gandhi Delhi Technological University for Women (IGDTUW) |
 | Team leader contact | Submitted on the submission platform only, as required |
 
 ## 2. Project title
@@ -99,7 +101,7 @@ No real patient data is used. Patients, genotypes, labs and sensor streams are g
 - Planned: LSTM / Temporal Fusion Transformer and cross-attention fusion, quantile heads, retrospective validation on authorised clinical data, clinician usability study, regulatory review.
 
 ## 12. Presentation and video
-- Presentation (PDF/PPT): *add link or file name*
+- Presentation (PDF/PPT): [`docs/GlucoTwin_AI_Happiest_Health_Phase1.pptx`](docs/GlucoTwin_AI_Happiest_Health_Phase1.pptx) and [PDF copy](docs/GlucoTwin_AI_Happiest_Health_Phase1.pdf)
 - 20-minute demo video (PowerPoint recording or unlisted YouTube): *add link*
 
 ## 13. Open-source licence
